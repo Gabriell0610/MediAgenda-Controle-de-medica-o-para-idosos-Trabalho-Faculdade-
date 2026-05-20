@@ -1,7 +1,9 @@
-import Fastfy from "fastify";
+import Fastify from "fastify";
 import cors from "@fastify/cors";
+import { registerErrorHandler } from "../middlewares/error-handler";
+import { registerRoutes } from "../routes";
 
-export const app = Fastfy();
+export const app = Fastify();
 
 app.register(cors, {
   origin: true,
@@ -12,3 +14,6 @@ app.get("/health", async () => {
     status: "ok",
   };
 });
+
+registerRoutes(app);
+registerErrorHandler(app);
