@@ -24,13 +24,13 @@ function mapMedication(doc: FirebaseFirestore.DocumentSnapshot): Medication {
 
 export async function createMedication(
   input: CreateMedicationInput,
+  userId: string,
 ): Promise<Medication> {
-  const now = Timestamp.now();
-
   const payload = {
+    userId,
     ...input,
-    createdAt: now,
-    updatedAt: now,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
 
   const docRef = await medicationsCollection.add(payload);
@@ -39,14 +39,16 @@ export async function createMedication(
   return mapMedication(createdDoc);
 }
 
-export async function listMedications(): Promise<Medication[]> {
+export async function listMedications(userId: string): Promise<Medication[]> {
   const snapshot = await medicationsCollection
+    .where("userId", "==", userId)
     .orderBy("createdAt", "desc")
     .get();
   return snapshot.docs.map(mapMedication);
 }
 
 export async function updateMedication(
+  userId: string,
   id: string,
   input: UpdateMedicationInput,
 ): Promise<Medication> {
@@ -57,16 +59,25 @@ export async function updateMedication(
     throw new AppError("Medication not found", 404);
   }
 
+  const medication = existingDoc.data();
+
+  if (medication?.userId !== userId) {
+    throw new AppError("Forbidden", 403);
+  }
+
   await docRef.update({
     ...input,
-    updatedAt: Timestamp.now(),
+    updatedAt: new Date().toISOString(),
   });
 
   const updatedDoc = await docRef.get();
   return mapMedication(updatedDoc);
 }
 
-export async function deleteMedication(id: string): Promise<void> {
+export async function deleteMedication(
+  userId: string,
+  id: string,
+): Promise<void> {
   const docRef = medicationsCollection.doc(id);
   const existingDoc = await docRef.get();
 
@@ -74,5 +85,18 @@ export async function deleteMedication(id: string): Promise<void> {
     throw new AppError("Medication not found", 404);
   }
 
+  verifyOwnerMedication(userId, existingDoc);
+
   await docRef.delete();
 }
+
+const verifyOwnerMedication = (
+  userId: string,
+  existingDoc: FirebaseFirestore.DocumentSnapshot<FirebaseFirestore.DocumentData>,
+) => {
+  const medication = existingDoc.data();
+
+  if (medication?.userId !== userId) {
+    throw new AppError("Forbidden", 403);
+  }
+};
