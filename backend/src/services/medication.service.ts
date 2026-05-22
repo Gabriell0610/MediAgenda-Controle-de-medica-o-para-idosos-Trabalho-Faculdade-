@@ -9,7 +9,9 @@ import { AppError } from "../middlewares/app-error";
 
 const medicationsCollection = db.collection("medications");
 
-function mapMedication(doc: FirebaseFirestore.DocumentSnapshot): Medication {
+function validateMedication(
+  doc: FirebaseFirestore.DocumentSnapshot,
+): Medication {
   const data = doc.data();
 
   if (!data) {
@@ -36,7 +38,7 @@ export async function createMedication(
   const docRef = await medicationsCollection.add(payload);
   const createdDoc = await docRef.get();
 
-  return mapMedication(createdDoc);
+  return validateMedication(createdDoc);
 }
 
 export async function listMedications(userId: string): Promise<Medication[]> {
@@ -44,7 +46,7 @@ export async function listMedications(userId: string): Promise<Medication[]> {
     .where("userId", "==", userId)
     .orderBy("createdAt", "desc")
     .get();
-  return snapshot.docs.map(mapMedication);
+  return snapshot.docs.map(validateMedication);
 }
 
 export async function updateMedication(
@@ -59,11 +61,7 @@ export async function updateMedication(
     throw new AppError("Medication not found", 404);
   }
 
-  const medication = existingDoc.data();
-
-  if (medication?.userId !== userId) {
-    throw new AppError("Forbidden", 403);
-  }
+  verifyOwnerMedication(userId, existingDoc);
 
   await docRef.update({
     ...input,
@@ -71,7 +69,7 @@ export async function updateMedication(
   });
 
   const updatedDoc = await docRef.get();
-  return mapMedication(updatedDoc);
+  return validateMedication(updatedDoc);
 }
 
 export async function deleteMedication(
