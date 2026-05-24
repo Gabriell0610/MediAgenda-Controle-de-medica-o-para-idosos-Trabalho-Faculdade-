@@ -1,0 +1,17 @@
+export const colors = {
+  primary: '#1D9E75',
+  background: '#F5FAF8',
+  surface: '#FFFFFF',
+  textPrimary: '#085041',
+  textSecondary: '#4D6A63',
+  heroBackground: '#E1F5EE',
+  heroText: '#085041',
+  white: '#FFFFFF',
+  medication: '#1D9E75',
+  medicationBackground: '#E1F5EE',
+  exam: '#534AB7',
+  examBackground: '#EEEDFE',
+  notification: '#EF9F27',
+  notificationBackground: '#FFF4E6',
+  border: '#E0E0E0',
+} as const;
