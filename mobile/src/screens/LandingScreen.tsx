@@ -1,21 +1,28 @@
-import React from "react";
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+﻿import React from 'react';
+import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-import FeatureItem from "../components/landing/FeatureItem";
-import HeroSection from "../components/landing/HeroSection";
-import Button from "../components/ui/Button";
-import Card from "../components/ui/Card";
-import { colors } from "../theme/colors";
-import { typography } from "../theme/typography";
+import FeatureItem from '../components/landing/FeatureItem';
+import HeroSection from '../components/landing/HeroSection';
+import Button from '../components/ui/Button';
+import Card from '../components/ui/Card';
+import { RootStackParamList } from '../navigation/AppNavigator';
+import { colors } from '../theme/colors';
+import { typography } from '../theme/typography';
+
+type LandingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Landing'>;
 
 const LandingScreen: React.FC = () => {
+  const navigation = useNavigation<LandingScreenNavigationProp>();
+
   const handleLoginPress = (): void => {
-    console.log("Entrar pressionado");
+    navigation.navigate('Login');
   };
 
   const handleStartPress = (): void => {
-    console.log("Começar agora pressionado");
+    navigation.navigate('Login');
   };
 
   return (
@@ -48,7 +55,7 @@ const LandingScreen: React.FC = () => {
           <Card style={styles.featureCard}>
             <FeatureItem
               icon="calendar-outline"
-              title="Agendamento de exames e consultas"
+              title="Agendamento de exames"
               description="Organize consultas e exames médicos"
               iconColor={colors.medication}
               iconBackground={colors.medicationBackground}
@@ -80,7 +87,7 @@ const LandingScreen: React.FC = () => {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: colors.white,
+    backgroundColor: colors.background,
   },
   scrollView: {
     flex: 1,
@@ -91,9 +98,9 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
   },
   logoText: {
     ...typography.heading3,
