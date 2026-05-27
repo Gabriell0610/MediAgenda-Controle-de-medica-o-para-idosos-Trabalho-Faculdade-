@@ -18,6 +18,9 @@ import Input from "../components/ui/Input";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { colors } from "../theme/colors";
 import { typography } from "../theme/typography";
+import { LOGIN_URL } from "../utils/const";
+import axios from "axios";
+import { LoginAndRegisterRequestInterface } from "../utils/types";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -29,8 +32,25 @@ const LoginScreen: React.FC = () => {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
 
-  const handleLogin = (): void => {
-    console.log("Entrar pressionado", { email, password });
+  const handleLogin = async (): Promise<void> => {
+    try {
+      const response = await axios.post<LoginAndRegisterRequestInterface>(
+        LOGIN_URL,
+        {
+          email,
+          password,
+          returnSecureToken: true,
+        },
+      );
+
+      const token = response.data.idToken;
+
+      console.log("login feito com sucesso");
+
+      console.log(token);
+    } catch (error: any) {
+      console.log("erro login", error.response.data);
+    }
   };
 
   const handleRegister = (): void => {

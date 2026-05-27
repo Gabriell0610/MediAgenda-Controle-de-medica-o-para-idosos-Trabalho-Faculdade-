@@ -18,6 +18,9 @@ import Input from "../components/ui/Input";
 import { RootStackParamList } from "../navigation/AppNavigator";
 import { colors } from "../theme/colors";
 import { typography } from "../theme/typography";
+import { BASE_URL, REGISTER_URL } from "../utils/const";
+import axios from "axios";
+import { LoginAndRegisterRequestInterface } from "../utils/types";
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -26,18 +29,49 @@ type RegisterScreenNavigationProp = StackNavigationProp<
 
 const RegisterScreen: React.FC = () => {
   const navigation = useNavigation<RegisterScreenNavigationProp>();
-  const [fullName, setFullName] = useState<string>("");
+  const [name, setFullName] = useState<string>("");
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
-  const [confirmPassword, setConfirmPassword] = useState<string>("");
 
-  const handleCreateAccount = (): void => {
-    console.log("Criar conta pressionado", {
-      fullName,
-      email,
-      password,
-      confirmPassword,
-    });
+  const handleCreateAccount = async () => {
+    try {
+      const responseFireAuth =
+        await axios.post<LoginAndRegisterRequestInterface>(REGISTER_URL, {
+          email,
+          password,
+          returnSecureToken: true,
+        });
+
+      const token = responseFireAuth.data.idToken;
+
+      const responseRegister =
+        await axios.post<LoginAndRegisterRequestInterface>(
+          `${BASE_URL}/users`,
+          {
+            name,
+            email,
+            returnSecureToken: true,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+      const tokenRegister = responseRegister.data.idToken;
+
+      console.log(
+        "usuario cadastrado com sucesso" +
+          "token de firebase:" +
+          token +
+          " " +
+          "token do backend: " +
+          tokenRegister,
+      );
+    } catch (error: any) {
+      console.log("erro login", error.response.data);
+    }
   };
 
   return (
@@ -69,7 +103,7 @@ const RegisterScreen: React.FC = () => {
           <View style={styles.formContainer}>
             <Input
               label="Nome completo"
-              value={fullName}
+              value={name}
               onChangeText={setFullName}
               placeholder="Seu nome"
               autoCapitalize="words"
