@@ -39,3 +39,8 @@ export async function createUser(
   const createdDoc = await docRef.get();
   return validateUser(createdDoc);
 }
+export async function findUser(userId: string): Promise<User> {
+  const doc = await usersCollection.doc(userId).get();
+
+  return validateUser(doc);
+}
