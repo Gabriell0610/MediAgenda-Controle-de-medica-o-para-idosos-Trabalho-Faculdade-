@@ -1,4 +1,4 @@
-export const BASE_URL = "http://192.168.0.121:3333/";
+export const BASE_URL = "http://172.20.10.10:3333";
 
 export const REGISTER_URL = `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDSfnOPOYJB8mwUT5xNkDIZyLzjlH0C_CA`;
 export const LOGIN_URL = `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDSfnOPOYJB8mwUT5xNkDIZyLzjlH0C_CA`;

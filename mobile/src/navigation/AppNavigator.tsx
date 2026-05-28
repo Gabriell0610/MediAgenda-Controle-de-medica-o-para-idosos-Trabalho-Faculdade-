@@ -5,11 +5,13 @@ import { createStackNavigator } from "@react-navigation/stack";
 import LandingScreen from "../screens/LandingScreen";
 import LoginScreen from "../screens/LoginScreen";
 import RegisterScreen from "../screens/RegisterScreen";
+import TabNavigator from "./TabNavigator";
 
 export type RootStackParamList = {
   Landing: undefined;
   Login: undefined;
   Register: undefined;
+  Main: undefined;
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -24,6 +26,11 @@ const AppNavigator: React.FC = () => {
         <Stack.Screen name="Landing" component={LandingScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
+        <Stack.Screen
+          name="Main"
+          component={TabNavigator}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

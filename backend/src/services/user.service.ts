@@ -20,7 +20,7 @@ function validateUser(doc: FirebaseFirestore.DocumentSnapshot): User {
 export async function createUser(
   userId: string,
   input: { name: string; email: string },
-): Promise<User> {
+): Promise<Omit<User, "createdAt">> {
   const docRef = usersCollection.doc(userId);
   const existingDoc = await docRef.get();
 
@@ -37,7 +37,13 @@ export async function createUser(
   await docRef.set(payload);
 
   const createdDoc = await docRef.get();
-  return validateUser(createdDoc);
+  const response = validateUser(createdDoc);
+
+  return {
+    name: response.name,
+    email: response.email,
+    id: response.id,
+  };
 }
 export async function findUser(userId: string): Promise<User> {
   const doc = await usersCollection.doc(userId).get();

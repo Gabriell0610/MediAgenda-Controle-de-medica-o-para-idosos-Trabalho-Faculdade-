@@ -20,7 +20,10 @@ import { colors } from "../theme/colors";
 import { typography } from "../theme/typography";
 import { BASE_URL, REGISTER_URL } from "../utils/const";
 import axios from "axios";
-import { LoginAndRegisterRequestInterface } from "../utils/types";
+import {
+  LoginAndRegisterRequestInterface,
+  RegisterRequestInterface,
+} from "../utils/types";
 
 type RegisterScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -43,34 +46,23 @@ const RegisterScreen: React.FC = () => {
         });
 
       const token = responseFireAuth.data.idToken;
-
-      const responseRegister =
-        await axios.post<LoginAndRegisterRequestInterface>(
-          `${BASE_URL}/users`,
-          {
-            name,
-            email,
-            returnSecureToken: true,
+      const responseRegister = await axios.post<RegisterRequestInterface>(
+        `${BASE_URL}/users`,
+        {
+          name,
+          email,
+          returnSecureToken: true,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
           },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-      const tokenRegister = responseRegister.data.idToken;
-
-      console.log(
-        "usuario cadastrado com sucesso" +
-          "token de firebase:" +
-          token +
-          " " +
-          "token do backend: " +
-          tokenRegister,
+        },
       );
     } catch (error: any) {
-      console.log("erro login", error.response.data);
+      console.log("status:", error.response?.status);
+      console.log("erro:", JSON.stringify(error.response?.data));
+      console.log("mensagem:", error.message);
     }
   };
 

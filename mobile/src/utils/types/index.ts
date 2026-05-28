@@ -8,3 +8,9 @@ export interface LoginAndRegisterRequestInterface {
   refreshToken: string;
   expiresIn: number;
 }
+
+export interface RegisterRequestInterface {
+  email: string;
+  id: string;
+  name: string;
+}

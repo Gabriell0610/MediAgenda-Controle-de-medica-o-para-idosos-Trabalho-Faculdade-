@@ -18,11 +18,11 @@ const LandingScreen: React.FC = () => {
   const navigation = useNavigation<LandingScreenNavigationProp>();
 
   const handleLoginPress = (): void => {
-    navigation.navigate('Login');
+    navigation.navigate('Main');
   };
 
   const handleStartPress = (): void => {
-    navigation.navigate('Login');
+    navigation.navigate('Main');
   };
 
   return (

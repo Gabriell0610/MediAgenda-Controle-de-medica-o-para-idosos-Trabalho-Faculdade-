@@ -4,6 +4,7 @@ import { AppError } from "./app-error";
 export function registerErrorHandler(app: FastifyInstance): void {
   app.setErrorHandler((error, request, reply) => {
     request.log.error(error);
+    console.log("erro: ", error);
 
     if (error instanceof AppError) {
       return reply.status(error.statusCode).send({
@@ -22,7 +23,7 @@ export function registerErrorHandler(app: FastifyInstance): void {
     }
 
     return reply.status(500).send({
-      message: "Internal server error",
+      message: `Internal server error ${error} `,
     });
   });
 }

@@ -45,9 +45,7 @@ const LoginScreen: React.FC = () => {
 
       const token = response.data.idToken;
 
-      console.log("login feito com sucesso");
-
-      console.log(token);
+      navigation.navigate("Main");
     } catch (error: any) {
       console.log("erro login", error.response.data);
     }
