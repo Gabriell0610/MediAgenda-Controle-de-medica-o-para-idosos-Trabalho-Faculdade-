@@ -1,28 +1,31 @@
-﻿import React from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
+﻿import React from "react";
+import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 
-import FeatureItem from '../components/landing/FeatureItem';
-import HeroSection from '../components/landing/HeroSection';
-import Button from '../components/ui/Button';
-import Card from '../components/ui/Card';
-import { RootStackParamList } from '../navigation/AppNavigator';
-import { colors } from '../theme/colors';
-import { typography } from '../theme/typography';
+import FeatureItem from "../components/landing/FeatureItem";
+import HeroSection from "../components/landing/HeroSection";
+import Button from "../components/ui/Button";
+import Card from "../components/ui/Card";
+import { RootStackParamList } from "../navigation/AppNavigator";
+import { colors } from "../theme/colors";
+import { typography } from "../theme/typography";
 
-type LandingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Landing'>;
+type LandingScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "Landing"
+>;
 
 const LandingScreen: React.FC = () => {
   const navigation = useNavigation<LandingScreenNavigationProp>();
 
   const handleLoginPress = (): void => {
-    navigation.navigate('Main');
+    navigation.navigate("Login");
   };
 
   const handleStartPress = (): void => {
-    navigation.navigate('Main');
+    navigation.navigate("Login");
   };
 
   return (
@@ -98,13 +101,13 @@ const styles = StyleSheet.create({
     gap: 20,
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
   logoText: {
     ...typography.heading3,
-    color: colors.textPrimary,
+    color: colors.white,
     fontSize: 22,
   },
   loginButton: {

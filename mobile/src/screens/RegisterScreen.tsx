@@ -59,6 +59,8 @@ const RegisterScreen: React.FC = () => {
           },
         },
       );
+
+      navigation.navigate("Login");
     } catch (error: any) {
       console.log("status:", error.response?.status);
       console.log("erro:", JSON.stringify(error.response?.data));

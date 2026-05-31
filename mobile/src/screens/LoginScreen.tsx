@@ -21,6 +21,7 @@ import { typography } from "../theme/typography";
 import { LOGIN_URL } from "../utils/const";
 import axios from "axios";
 import { LoginAndRegisterRequestInterface } from "../utils/types";
+import { getToken, saveToken } from "../storage/auth-storage";
 
 type LoginScreenNavigationProp = StackNavigationProp<
   RootStackParamList,
@@ -44,6 +45,11 @@ const LoginScreen: React.FC = () => {
       );
 
       const token = response.data.idToken;
+
+      await saveToken(token);
+
+      const tokenSaved = await getToken();
+      console.log(tokenSaved);
 
       navigation.navigate("Main");
     } catch (error: any) {

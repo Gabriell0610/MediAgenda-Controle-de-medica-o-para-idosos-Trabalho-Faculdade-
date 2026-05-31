@@ -1,16 +1,29 @@
-import React, { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useMemo } from "react";
+import { StyleSheet, Text, View } from "react-native";
 
-import { colors } from '../../theme/colors';
-import { typography } from '../../theme/typography';
+import { colors } from "../../theme/colors";
+import { typography } from "../../theme/typography";
 
-interface TodayItemProps {
-  time: string;
-  title: string;
-  subtitle: string;
+type ItemType = "Appointment" | "Medications";
+interface TodayItemPropsBase {
   dotColor: string;
   timeBackgroundColor: string;
   timeTextColor: string;
+  mode?: ItemType;
+}
+
+export interface TodayItemProps extends TodayItemPropsBase {
+  time?: string;
+  title?: string;
+  subtitle?: string;
+  address?: string;
+  notes?: string;
+  specialty?: string;
+  doctorName?: string;
+  name?: string;
+  dosage?: string;
+  frequency?: string;
+  scheduleTimes?: string[];
 }
 
 const TodayItem: React.FC<TodayItemProps> = ({
@@ -20,6 +33,11 @@ const TodayItem: React.FC<TodayItemProps> = ({
   dotColor,
   timeBackgroundColor,
   timeTextColor,
+  mode,
+  doctorName,
+  address,
+  notes,
+  specialty,
 }) => {
   const dynamicStyles = useMemo(
     () =>
@@ -37,7 +55,22 @@ const TodayItem: React.FC<TodayItemProps> = ({
     [dotColor, timeBackgroundColor, timeTextColor],
   );
 
-  return (
+  return mode === "Appointment" ? (
+    <View style={styles.container}>
+      <View style={[styles.timeBadge, dynamicStyles.timeBadge]}>
+        <Text style={[styles.timeText, dynamicStyles.timeText]}>{time}</Text>
+      </View>
+
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.subtitle}>{`Endereço: ${address}`}</Text>
+        <Text style={styles.subtitle}>{`Doutor: ${doctorName}`}</Text>
+        <Text style={styles.subtitle}>{`Lembrete: ${notes}`}</Text>
+      </View>
+
+      <View style={[styles.dot, dynamicStyles.dot]} />
+    </View>
+  ) : (
     <View style={styles.container}>
       <View style={[styles.timeBadge, dynamicStyles.timeBadge]}>
         <Text style={[styles.timeText, dynamicStyles.timeText]}>{time}</Text>
@@ -55,8 +88,8 @@ const TodayItem: React.FC<TodayItemProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 10,
     backgroundColor: colors.surface,
     borderRadius: 10,
@@ -69,11 +102,11 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     paddingVertical: 6,
     minWidth: 44,
-    alignItems: 'center',
+    alignItems: "center",
   },
   timeText: {
     fontSize: 11,
-    fontWeight: '500',
+    fontWeight: "500",
   },
   textContainer: {
     flex: 1,
