@@ -17,10 +17,7 @@ export const createMedicationSchema = z.object({
   startDate: z
     .string()
     .regex(dateRegex, "startDate must be in YYYY-MM-DD format"),
-  endDate: z
-    .string()
-    .regex(dateRegex, "endDate must be in YYYY-MM-DD format")
-    .optional(),
+  endDate: z.string().regex(dateRegex, "endDate must be in YYYY-MM-DD format"),
   notes: z
     .string()
     .max(500, "notes must have at most 500 characters")

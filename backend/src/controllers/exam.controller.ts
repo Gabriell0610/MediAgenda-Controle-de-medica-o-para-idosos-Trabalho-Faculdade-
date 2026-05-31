@@ -8,6 +8,7 @@ import {
   createExam,
   deleteExam,
   listExams,
+  listExamsToday,
   updateExam,
 } from "../services/exam.service";
 
@@ -26,6 +27,13 @@ export async function listExamsController(
   reply: FastifyReply,
 ) {
   const exams = await listExams(request.user.uid);
+  return reply.status(200).send(exams);
+}
+export async function listExamsControllerToday(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const exams = await listExamsToday(request.user.uid);
   return reply.status(200).send(exams);
 }
 

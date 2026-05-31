@@ -6,3 +6,7 @@ export type Medication = CreateMedicationInput & {
   createdAt: Timestamp;
   updatedAt: Timestamp;
 };
+
+export type MedicationResponse = CreateMedicationInput & {
+  id: string;
+};

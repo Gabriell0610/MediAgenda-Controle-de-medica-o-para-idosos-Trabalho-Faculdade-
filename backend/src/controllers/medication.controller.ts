@@ -8,6 +8,7 @@ import {
   createMedication,
   deleteMedication,
   listMedications,
+  listMedicationsToday,
   updateMedication,
 } from "../services/medication.service";
 
@@ -26,6 +27,13 @@ export async function listMedicationsController(
   reply: FastifyReply,
 ) {
   const medications = await listMedications(request.user.uid);
+  return reply.status(200).send(medications);
+}
+export async function listMedicationsTodayController(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const medications = await listMedicationsToday(request.user.uid);
   return reply.status(200).send(medications);
 }
 

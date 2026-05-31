@@ -8,6 +8,7 @@ import {
   createAppointment,
   deleteAppointment,
   listAppointments,
+  listAppointmentsToday,
   updateAppointment,
 } from "../services/appointment.service";
 
@@ -26,6 +27,14 @@ export async function listAppointmentsController(
   reply: FastifyReply,
 ) {
   const appointments = await listAppointments(request.user.uid);
+  return reply.status(200).send(appointments);
+}
+
+export async function listAppointmentsTodayController(
+  request: FastifyRequest,
+  reply: FastifyReply,
+) {
+  const appointments = await listAppointmentsToday(request.user.uid);
   return reply.status(200).send(appointments);
 }
 

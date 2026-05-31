@@ -1,10 +1,8 @@
 import { db } from "../firebase/firebase";
 import { AppError } from "../middlewares/app-error";
-import type {
-  CreateExamInput,
-  UpdateExamInput,
-} from "../schemas/exame.schema";
+import type { CreateExamInput, UpdateExamInput } from "../schemas/exame.schema";
 import type { Exam } from "../types/exam.types";
+import { getTodayBrazil } from "../utils";
 
 const examsCollection = db.collection("exams");
 
@@ -47,6 +45,19 @@ export async function listExams(userId: string): Promise<Exam[]> {
     .get();
 
   return snapshot.docs.map(validateExam);
+}
+
+export async function listExamsToday(userId: string): Promise<Exam[]> {
+  const today = getTodayBrazil();
+  const snapshot = await examsCollection
+    .where("userId", "==", userId)
+    .where("date", "==", today)
+    .get();
+
+  const exams = snapshot.docs.map(validateExam);
+  console.log("passou aqui: ", exams);
+
+  return exams.sort((a, b) => a.time.localeCompare(b.time));
 }
 
 export async function updateExam(

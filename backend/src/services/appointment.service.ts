@@ -5,6 +5,7 @@ import type {
   UpdateAppointmentInput,
 } from "../schemas/appointment.schema";
 import type { Appointment } from "../types/appointment.types";
+import { getTodayBrazil } from "../utils";
 
 const appointmentsCollection = db.collection("appointments");
 
@@ -45,10 +46,22 @@ export async function createAppointment(
 export async function listAppointments(userId: string): Promise<Appointment[]> {
   const snapshot = await appointmentsCollection
     .where("userId", "==", userId)
-    .orderBy("createdAt", "desc")
     .get();
 
   return snapshot.docs.map(validateAppointment);
+}
+export async function listAppointmentsToday(
+  userId: string,
+): Promise<Appointment[]> {
+  const today = getTodayBrazil();
+  const snapshot = await appointmentsCollection
+    .where("userId", "==", userId)
+    .where("date", "==", today)
+    .get();
+
+  const appointments = snapshot.docs.map(validateAppointment);
+
+  return appointments.sort((a, b) => a.time.localeCompare(b.time));
 }
 
 export async function updateAppointment(

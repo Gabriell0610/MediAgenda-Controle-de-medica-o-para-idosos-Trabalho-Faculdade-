@@ -4,30 +4,30 @@ import type {
   CreateMedicationInput,
   UpdateMedicationInput,
 } from "../schemas/medication.schema";
-import type { Medication } from "../types/medication.types";
+import type { MedicationResponse, Medication } from "../types/medication.types";
 import { AppError } from "../middlewares/app-error";
+import { getTodayBrazil } from "../utils";
 
 const medicationsCollection = db.collection("medications");
 
 function validateMedication(
   doc: FirebaseFirestore.DocumentSnapshot,
-): Medication {
+): MedicationResponse {
   const data = doc.data();
 
   if (!data) {
     throw new AppError("Medication not found", 404);
   }
 
-  return {
-    id: doc.id,
-    ...(data as Omit<Medication, "id">),
-  };
+  const { createdAt, updatedAt, ...rest } = data;
+
+  return { id: doc.id, ...rest } as unknown as MedicationResponse;
 }
 
 export async function createMedication(
   input: CreateMedicationInput,
   userId: string,
-): Promise<Medication> {
+): Promise<MedicationResponse> {
   const payload = {
     userId,
     ...input,
@@ -41,7 +41,9 @@ export async function createMedication(
   return validateMedication(createdDoc);
 }
 
-export async function listMedications(userId: string): Promise<Medication[]> {
+export async function listMedications(
+  userId: string,
+): Promise<MedicationResponse[]> {
   const snapshot = await medicationsCollection
     .where("userId", "==", userId)
     .orderBy("createdAt", "desc")
@@ -49,11 +51,25 @@ export async function listMedications(userId: string): Promise<Medication[]> {
   return snapshot.docs.map(validateMedication);
 }
 
+export async function listMedicationsToday(
+  userId: string,
+): Promise<MedicationResponse[]> {
+  const today = getTodayBrazil();
+  const snapshot = await medicationsCollection
+    .where("userId", "==", userId)
+    .where("startDate", "<=", today)
+    .where("endDate", ">=", today)
+    .orderBy("endDate", "asc")
+    .get();
+
+  return snapshot.docs.map(validateMedication);
+}
+
 export async function updateMedication(
   userId: string,
   id: string,
   input: UpdateMedicationInput,
-): Promise<Medication> {
+): Promise<MedicationResponse> {
   const docRef = medicationsCollection.doc(id);
   const existingDoc = await docRef.get();
 
@@ -86,6 +102,7 @@ export async function deleteMedication(
   verifyOwnerMedication(userId, existingDoc);
 
   await docRef.delete();
+  throw new AppError("Forbidden", 403);
 }
 
 const verifyOwnerMedication = (
